@@ -1,28 +1,15 @@
-# ChatGPT-Pre-Rem-Scripts
-Index. Hardware.
+1) Is the approach “safe”? (what I do and what I avoid)
 
-  
-  
-  Set-StaticAllRanges.ps1 — 
+Only built-in cmdlets. Scripts use Get/Set/New/Remove-Net* cmdlets from Windows’ NetTCPIP module. No Invoke-Expression, no external downloads, no registry hacks, no scheduled tasks.
 
-  
-  probes .1/.254 gateways across:
+Scoped changes. Every action is per-interface using -InterfaceAlias so you don’t accidentally touch the wrong adapter.
 
-  
-  192.168.0.0/16
+Least surprise. When a route is touched, it’s only the default route on that adapter. IP adds are explicit; no wildcards.
 
-  
-  172.10.0.0–172.40.255.255
+PS 5.1–friendly. No UInt64 math or tricky bitwise games; simple loops & dotted-octet handling.
 
+Clear exit. Basic, readable output; errors fail fast with a message you can act on.
 
-  100.0.0.0/8
+2) New “No-Wait” scripts (to avoid Windows “Identifying…” delays)
 
-  
-  10.0.0.0–31.255.255.255
-
-
-  then assigns x.y.z.<HostOctet>/24 and installs a default route on the first interface that works (tries Wi-Fi → Cellular → Ethernet unless you override).
-
-
-   
-   PreAdd-AliasesAllRanges.ps1 — pre-adds a sampled set of /24 aliases with -SkipAsSource (no routes) across the same ranges.
+These are purpose-built so you don’t sit through DHCP timeout screens when you plug into Ethernet/broadband, Wi-Fi, or Cellular.
